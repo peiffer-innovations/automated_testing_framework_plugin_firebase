@@ -118,7 +118,8 @@ class FirebaseTestStore {
     var doc = db
         .reference()
         .child(actualCollectionPath)
-        .child(report.name)
+        .child(hex.encode(report.name.codeUnits))
+        .child('v${report.version}')
         .child(hex.encode(
             '${report.deviceInfo.deviceSignature}_${report.startTime.millisecondsSinceEpoch}'
                 .codeUnits));
@@ -128,10 +129,12 @@ class FirebaseTestStore {
       'endTime': report.endTime?.millisecondsSinceEpoch,
       'errorSteps': report.errorSteps,
       'images': report.images.map((entity) => entity.hash).toList(),
+      'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
+      'logs': report.logs,
       'name': report.name,
       'passedSteps': report.passedSteps,
       'runtimeException': report.runtimeException,
-      'startTime': report.startTime?.millisecondsSinceEpoch,
+      'startTime': report.startTime.millisecondsSinceEpoch,
       'steps': JsonClass.toJsonList(report.steps),
       'success': report.success,
       'version': report.version,

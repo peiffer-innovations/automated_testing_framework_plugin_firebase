@@ -60,7 +60,11 @@ class AssertFirebaseValueStep extends TestRunnerStep {
     @required TestReport report,
     @required TestController tester,
   }) async {
-    var name = "assert_firebase_value('$path', '$value')";
+    String path = tester.resolveVariable(this.path);
+    String value = tester.resolveVariable(this.value);
+    assert(path?.isNotEmpty == true);
+
+    var name = "assert_firebase_value('$path', '$value', '$equals')";
     log(
       name,
       tester: tester,

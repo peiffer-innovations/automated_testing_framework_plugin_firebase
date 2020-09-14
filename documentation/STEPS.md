@@ -57,11 +57,11 @@ Test Step IDs                                     | Description
 
 **Values**
 
-Key      | Type    | Required | Description
----------|---------|----------|-------------
-`equals` | boolean | No       | Defines whether the Document's value must equal the `value` or must not equal the `value`.  Defaults to `true` if not defined.
-`path`   | String  | Yes      | The `path` to the Document. 
-`value`  | String  | Yes      | The value to evaluate against.
+Key      | Type    | Required | Supports Variable | Description
+---------|---------|----------|-------------------|-------------
+`equals` | boolean | No       | No                | Defines whether the Document's value must equal the `value` or must not equal the `value`.  Defaults to `true` if not defined.
+`path`   | String  | Yes      | Yes               | The `path` to the Document. 
+`value`  | String  | Yes      | Yes               | The value to evaluate against.
 
 
 ---
@@ -88,7 +88,7 @@ Key      | Type    | Required | Description
 
 **Values**
 
-Key     | Type    | Required | Description
---------|---------|----------|-------------
-`path`  | String  | Yes      | The `path` of the Firebase Document to check.
-`value` | String  | Yes      | The String-encoded JSON value to set to the Document.
+Key     | Type    | Required | Supports Variable | Description
+--------|---------|----------|-------------------|-------------
+`path`  | String  | Yes      | Yes               | The `path` of the Firebase Document to check.
+`value` | String  | Yes      | Yes               | The String-encoded JSON value to set to the Document.
