@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:automated_testing_framework/automated_testing_framework.dart';
+import 'package:automated_testing_framework_plugin_firebase_storage/automated_testing_framework_plugin_firebase_storage.dart';
 import 'package:convert/convert.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -141,28 +142,11 @@ class FirebaseTestStore {
     });
 
     if (!kIsWeb && storage != null) {
-      for (var image in report.images) {
-        var ref = storage
-            .ref()
-            .child(imagePath ?? 'images')
-            .child('${image.hash}.png');
-        var uploadTask = ref.putData(
-          image.image,
-          StorageMetadata(contentType: 'image/png'),
-        );
-
-        int lastProgress = -10;
-        uploadTask.events.listen((event) {
-          int progress =
-              event.snapshot.bytesTransferred ~/ event.snapshot.totalByteCount;
-          if (lastProgress + 10 <= progress) {
-            _logger.log(Level.FINER, 'Image: ${image.hash} -- $progress%');
-            lastProgress = progress;
-          }
-        });
-
-        await uploadTask.onComplete;
-      }
+      var testStorage = FirebaseStorageTestStore(
+        storage: storage,
+        imagePath: imagePath,
+      );
+      testStorage.uploadImages(report);
     }
 
     return result;

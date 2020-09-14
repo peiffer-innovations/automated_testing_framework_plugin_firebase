@@ -1,3 +1,8 @@
+## [1.0.2] - September 14th, 2020
+
+* Switched to the common `automated_testing_framework_plugin_firebase_storage` image uploader.
+
+
 ## [1.0.1] - September 14th, 2020
 
 * Added logs to `TestReport`
