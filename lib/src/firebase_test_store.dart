@@ -66,7 +66,10 @@ class FirebaseTestStore {
 
   /// Implementation of the [TestReader] functional interface that can read test
   /// data from Firebase Realtime Database.
-  Future<List<PendingTest>> testReader(BuildContext context) async {
+  Future<List<PendingTest>> testReader(
+    BuildContext context, {
+    String suiteName,
+  }) async {
     List<PendingTest> results;
 
     try {
@@ -97,10 +100,13 @@ class FirebaseTestStore {
           }),
           name: data['name'],
           numSteps: data['steps']?.length ?? 0,
+          suiteName: data['suiteName'],
           version: data['version'],
         );
 
-        results.add(pTest);
+        if (suiteName == null || pTest.suiteName == suiteName) {
+          results.add(pTest);
+        }
       });
     } catch (e, stack) {
       _logger.severe('Error loading tests', e, stack);
@@ -137,6 +143,7 @@ class FirebaseTestStore {
       'runtimeException': report.runtimeException,
       'startTime': report.startTime.millisecondsSinceEpoch,
       'steps': JsonClass.toJsonList(report.steps),
+      'suiteName': report.suiteName,
       'success': report.success,
       'version': report.version,
     });
