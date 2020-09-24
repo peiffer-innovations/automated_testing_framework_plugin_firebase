@@ -1,3 +1,10 @@
+## [1.0.4] - September 24th, 2020
+
+* Switched to latest report structure
+* Updated to latest framework
+* Added clock example
+
+
 ## [1.0.3] - September 19th, 2020
 
 * Updated with test suites

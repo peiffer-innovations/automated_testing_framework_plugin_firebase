@@ -131,29 +131,20 @@ class FirebaseTestStore {
             '${report.deviceInfo.deviceSignature}_${report.startTime.millisecondsSinceEpoch}'
                 .codeUnits));
 
-    await doc.set({
-      'deviceInfo': report.deviceInfo.toJson(),
-      'endTime': report.endTime?.millisecondsSinceEpoch,
-      'errorSteps': report.errorSteps,
-      'images': report.images.map((entity) => entity.hash).toList(),
-      'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
-      'logs': report.logs,
-      'name': report.name,
-      'passedSteps': report.passedSteps,
-      'runtimeException': report.runtimeException,
-      'startTime': report.startTime.millisecondsSinceEpoch,
-      'steps': JsonClass.toJsonList(report.steps),
-      'suiteName': report.suiteName,
-      'success': report.success,
-      'version': report.version,
-    });
+    await doc.set(
+      <String, dynamic>{
+        'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
+      }..addAll(
+          report.toJson(false),
+        ),
+    );
 
     if (!kIsWeb && storage != null) {
       var testStorage = FirebaseStorageTestStore(
         storage: storage,
         imagePath: imagePath,
       );
-      testStorage.uploadImages(report);
+      await testStorage.uploadImages(report);
     }
 
     return result;
@@ -172,7 +163,7 @@ class FirebaseTestStore {
 
       var id = hex.encoder.convert(test.name.codeUnits);
 
-      int version = (test.version ?? 0) + 1;
+      var version = (test.version ?? 0) + 1;
 
       var testData = test
           .copyWith(
