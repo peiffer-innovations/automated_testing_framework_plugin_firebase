@@ -6,6 +6,11 @@ class TestFirebaseTranslations {
     value: 'Not valid JSON',
   );
 
+  static const atf_firebase_error_exporting_test = TranslationEntry(
+    key: 'atf_firebase_error_exporting_test',
+    value: 'An error occurred while exporting the test.',
+  );
+
   static const atf_firebase_form_path = TranslationEntry(
     key: 'atf_firebase_form_path',
     value: 'Path',

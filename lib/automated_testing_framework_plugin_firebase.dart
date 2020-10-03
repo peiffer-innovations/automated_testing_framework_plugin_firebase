@@ -1,3 +1,5 @@
+export 'src/driver/firebase_test_driver.dart';
+
 export 'src/firebase_test_store.dart';
 
 export 'src/forms/assert_firebase_value_form.dart';

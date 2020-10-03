@@ -1,3 +1,9 @@
+## [1.0.5] - October 3rd, 2020
+
+* Fixed suite name in test reader.
+* Added golden image reader and writer (via Cloud Storage).
+
+
 ## [1.0.4] - September 24th, 2020
 
 * Switched to latest report structure
