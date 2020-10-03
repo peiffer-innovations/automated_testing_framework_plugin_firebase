@@ -2,6 +2,7 @@
 
 * Fixed suite name in test reader.
 * Added golden image reader and writer (via Cloud Storage).
+* Started prototype for external test driver capabilities.
 
 
 ## [1.0.4] - September 24th, 2020
