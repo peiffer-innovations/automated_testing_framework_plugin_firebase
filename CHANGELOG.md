@@ -1,3 +1,8 @@
+## [1.0.6] - October 5th, 2020
+
+* Have a working receiver of the external test driver using Firebase as the communication channel.
+
+
 ## [1.0.5] - October 3rd, 2020
 
 * Fixed suite name in test reader.
