@@ -87,11 +87,7 @@ class FirebaseTestStore {
   Future<void> goldenImageWriter(TestReport report) async {
     var actualCollectionPath = goldenImageCollectionPath ?? 'goldens';
 
-    var suitePrefix =
-        report.suiteName?.isNotEmpty == true ? '${report.suiteName}_' : '';
-    var name =
-        '${suitePrefix}${report.name}_${report.deviceInfo.os}_${report.deviceInfo.orientation}_${report.deviceInfo.pixels.width}x${report.deviceInfo.pixels.height}';
-    var id = hex.encode(utf8.encode(name));
+    var id = _getGoldenImageId(report);
 
     var data = <String, String>{};
     for (var image in (report.images ?? <TestImage>[])) {
@@ -149,13 +145,14 @@ class FirebaseTestStore {
 
       var suitePrefix = suiteName?.isNotEmpty == true ? '${suiteName}_' : '';
       var name =
-          '${suitePrefix}${testName}_${deviceInfo.os}_${deviceInfo.orientation}_${deviceInfo.pixels.width}x${deviceInfo.pixels.height}.json';
+          '${suitePrefix}${testName}_${deviceInfo.os}_${deviceInfo.systemVersion}_${deviceInfo.model}_${deviceInfo.device}_${deviceInfo.orientation}';
+
       var id = hex.encode(utf8.encode(name));
 
       var snapshot =
           await db.reference().child(actualCollectionPath).child(id).once();
       if (snapshot.value != null) {
-        var goldenJson = json.decode(snapshot.value);
+        var goldenJson = snapshot.value;
         golden = GoldenTestImages.fromDynamic(goldenJson);
       }
     }
@@ -323,5 +320,16 @@ class FirebaseTestStore {
       }
     }
     return result;
+  }
+
+  String _getGoldenImageId(TestReport report) {
+    var testName = report.name;
+    var suiteName = report.suiteName;
+    var suitePrefix = suiteName?.isNotEmpty == true ? '${suiteName}_' : '';
+    var deviceInfo = report.deviceInfo;
+    var name =
+        '${suitePrefix}${testName}_${deviceInfo.os}_${deviceInfo.systemVersion}_${deviceInfo.model}_${deviceInfo.device}_${deviceInfo.orientation}';
+
+    return hex.encode(utf8.encode(name));
   }
 }

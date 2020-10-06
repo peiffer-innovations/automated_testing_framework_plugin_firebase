@@ -1,3 +1,8 @@
+## [1.0.6+1] - October 6th, 2020
+
+* Standardized on a better key for golden images.
+
+
 ## [1.0.6] - October 5th, 2020
 
 * Have a working receiver of the external test driver using Firebase as the communication channel.
