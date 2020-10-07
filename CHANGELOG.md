@@ -1,3 +1,8 @@
+## [1.0.6+2] - October 7th, 2020
+
+* Removed unnecessary `crypto` package from explicit dependencies.
+
+
 ## [1.0.6+1] - October 6th, 2020
 
 * Standardized on a better key for golden images.
