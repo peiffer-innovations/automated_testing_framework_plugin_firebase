@@ -1,3 +1,8 @@
+## [1.0.6+3] - October 12th, 2020
+
+* Added driver name to the object when the driver is connected.
+
+
 ## [1.0.6+2] - October 7th, 2020
 
 * Removed unnecessary `crypto` package from explicit dependencies.

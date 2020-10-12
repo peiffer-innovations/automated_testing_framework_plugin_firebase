@@ -99,6 +99,7 @@ class FirebaseTestDriver {
             .set(
               DrivableDevice(
                 driverId: _driver?.id,
+                driverName: _driver?.name,
                 id: testDeviceInfo.id,
                 secret: _secret,
                 status: _testController.runningTest == true
