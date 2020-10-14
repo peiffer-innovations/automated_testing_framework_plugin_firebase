@@ -296,6 +296,7 @@ class FirebaseTestStore {
             steps: test.steps
                 .map((e) => e.copyWith(image: Uint8List.fromList([])))
                 .toList(),
+            timestamp: DateTime.now(),
             version: version,
           )
           .toJson();

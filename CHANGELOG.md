@@ -1,3 +1,8 @@
+## [1.0.7] - October 14th, 2020
+
+* Added timestamp to `testWriter`.
+
+
 ## [1.0.6+3] - October 12th, 2020
 
 * Added driver name to the object when the driver is connected.
