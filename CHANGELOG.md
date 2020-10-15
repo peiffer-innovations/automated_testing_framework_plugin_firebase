@@ -1,3 +1,8 @@
+## [1.0.8] - October 15th, 2020
+
+* Updated to use new id for `GoldenTestImages` provided from core framework.
+
+
 ## [1.0.7] - October 14th, 2020
 
 * Added timestamp to `testWriter`.

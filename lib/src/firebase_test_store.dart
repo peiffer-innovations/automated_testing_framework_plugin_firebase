@@ -130,15 +130,12 @@ class FirebaseTestStore {
     int testVersion,
   }) async {
     GoldenTestImages golden;
-    if (_currentGoldenTestImages?.testName == testName &&
-        _currentGoldenTestImages?.suiteName == suiteName &&
-        _currentGoldenTestImages?.deviceInfo?.orientation ==
-            deviceInfo.orientation &&
-        _currentGoldenTestImages?.deviceInfo?.os == deviceInfo.os &&
-        _currentGoldenTestImages?.deviceInfo?.pixels?.width ==
-            deviceInfo?.pixels?.width &&
-        _currentGoldenTestImages?.deviceInfo?.pixels?.height ==
-            deviceInfo?.pixels?.height) {
+    if (_currentGoldenTestImages?.id !=
+        GoldenTestImages.createId(
+          deviceInfo: deviceInfo,
+          suiteName: suiteName,
+          testName: testName,
+        )) {
       golden = _currentGoldenTestImages;
     } else {
       var actualCollectionPath = '${goldenImageCollectionPath ?? 'goldens'}';
@@ -323,14 +320,6 @@ class FirebaseTestStore {
     return result;
   }
 
-  String _getGoldenImageId(TestReport report) {
-    var testName = report.name;
-    var suiteName = report.suiteName;
-    var suitePrefix = suiteName?.isNotEmpty == true ? '${suiteName}_' : '';
-    var deviceInfo = report.deviceInfo;
-    var name =
-        '${suitePrefix}${testName}_${deviceInfo.os}_${deviceInfo.systemVersion}_${deviceInfo.model}_${deviceInfo.device}_${deviceInfo.orientation}';
-
-    return hex.encode(utf8.encode(name));
-  }
+  String _getGoldenImageId(TestReport report) =>
+      hex.encode(utf8.encode(GoldenTestImages.createIdFromReport(report)));
 }
