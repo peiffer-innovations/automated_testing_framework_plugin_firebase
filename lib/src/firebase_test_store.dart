@@ -140,11 +140,7 @@ class FirebaseTestStore {
     } else {
       var actualCollectionPath = '${goldenImageCollectionPath ?? 'goldens'}';
 
-      var suitePrefix = suiteName?.isNotEmpty == true ? '${suiteName}_' : '';
-      var name =
-          '${suitePrefix}${testName}_${deviceInfo.os}_${deviceInfo.systemVersion}_${deviceInfo.model}_${deviceInfo.device}_${deviceInfo.orientation}';
-
-      var id = hex.encode(utf8.encode(name));
+      var id = hex.encode(utf8.encode(golden.id));
 
       var snapshot =
           await db.reference().child(actualCollectionPath).child(id).once();

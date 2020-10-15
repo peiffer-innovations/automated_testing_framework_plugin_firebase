@@ -1,3 +1,8 @@
+## [1.0.8+1] - October 15th, 2020
+
+* Fixed golden image id in the `testImageReader`.
+
+
 ## [1.0.8] - October 15th, 2020
 
 * Updated to use new id for `GoldenTestImages` provided from core framework.
