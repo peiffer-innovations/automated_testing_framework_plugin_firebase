@@ -129,18 +129,18 @@ class FirebaseTestStore {
     @required String testName,
     int testVersion,
   }) async {
+    var goldenId = GoldenTestImages.createId(
+      deviceInfo: deviceInfo,
+      suiteName: suiteName,
+      testName: testName,
+    );
     GoldenTestImages golden;
-    if (_currentGoldenTestImages?.id !=
-        GoldenTestImages.createId(
-          deviceInfo: deviceInfo,
-          suiteName: suiteName,
-          testName: testName,
-        )) {
+    if (_currentGoldenTestImages?.id == goldenId) {
       golden = _currentGoldenTestImages;
     } else {
       var actualCollectionPath = '${goldenImageCollectionPath ?? 'goldens'}';
 
-      var id = hex.encode(utf8.encode(golden.id));
+      var id = hex.encode(utf8.encode(goldenId));
 
       var snapshot =
           await db.reference().child(actualCollectionPath).child(id).once();

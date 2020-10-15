@@ -1,3 +1,8 @@
+## [1.0.8+2] - October 15th, 2020
+
+* Fixed inverted logic on golden image cache.
+
+
 ## [1.0.8+1] - October 15th, 2020
 
 * Fixed golden image id in the `testImageReader`.
