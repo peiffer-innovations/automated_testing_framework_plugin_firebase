@@ -2,7 +2,7 @@ name: automated_testing_framework_plugin_firebase
 description: Library to use Google's Firebase Realtime Database as a storage mechanism for automated tests and test results.
 homepage: https://github.com/peiffer-innovations/automated_testing_framework_plugin_firebase
 
-version: 1.0.8+2
+version: 1.0.9
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

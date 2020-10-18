@@ -12,6 +12,7 @@ class FirebaseTestDriver {
   FirebaseTestDriver({
     @required this.basePath,
     @required FirebaseDatabase db,
+    this.deviceId,
     bool enabled = true,
     Duration pingTimeout,
     @required String secret,
@@ -29,6 +30,8 @@ class FirebaseTestDriver {
   static final Logger _logger = Logger('FirebaseTestDriver');
 
   final String basePath;
+  final String deviceId;
+
   final FirebaseDatabase _db;
   final Duration _pingTimeout;
   final String _secret;
@@ -95,12 +98,12 @@ class FirebaseTestDriver {
             .reference()
             .child(basePath)
             .child('devices')
-            .child(testDeviceInfo.id)
+            .child(_getDeviceId(testDeviceInfo))
             .set(
               DrivableDevice(
                 driverId: _driver?.id,
                 driverName: _driver?.name,
-                id: testDeviceInfo.id,
+                id: _getDeviceId(testDeviceInfo),
                 secret: _secret,
                 status: _testController.runningTest == true
                     ? 'running'
@@ -114,7 +117,7 @@ class FirebaseTestDriver {
           .reference()
           .child(basePath)
           .child('connections')
-          .child(testDeviceInfo.id)
+          .child(_getDeviceId(testDeviceInfo))
           .onValue
           .listen((event) async {
         if (_driver == null) {
@@ -146,7 +149,7 @@ class FirebaseTestDriver {
           .reference()
           .child(basePath)
           .child('connections')
-          .child(testDeviceInfo.id)
+          .child(_getDeviceId(testDeviceInfo))
           .child('requests')
           .remove();
 
@@ -154,7 +157,7 @@ class FirebaseTestDriver {
           .reference()
           .child(basePath)
           .child('devices')
-          .child(testDeviceInfo.id)
+          .child(_getDeviceId(testDeviceInfo))
           .remove();
     }
 
@@ -189,7 +192,7 @@ class FirebaseTestDriver {
         .reference()
         .child(basePath)
         .child('connections')
-        .child(testDeviceInfo.id)
+        .child(_getDeviceId(testDeviceInfo))
         .child(driver.id)
         .onValue
         .listen((event) {
@@ -231,6 +234,9 @@ class FirebaseTestDriver {
     await _applyStatusChange();
   }
 
+  String _getDeviceId(TestDeviceInfo testDeviceInfo) =>
+      deviceId ?? testDeviceInfo.id;
+
   Future<void> _runTests(
     String driverId,
     DriverTestRequest request,
@@ -252,7 +258,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('status')
-              .child(testDeviceInfo.id)
+              .child(_getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(
                 DrivenTestStatus.fromTest(
@@ -273,7 +279,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('status')
-              .child(testDeviceInfo.id)
+              .child(_getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(
                 DrivenTestStatus.fromTest(
@@ -302,7 +308,7 @@ class FirebaseTestDriver {
                   .child('driven_test')
                   .child(driverId)
                   .child('status')
-                  .child(testDeviceInfo.id)
+                  .child(_getDeviceId(testDeviceInfo))
                   .child(hex.encode(utf8.encode(test.id)))
                   .set(
                     DrivenTestStatus.fromTest(
@@ -336,7 +342,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('status')
-              .child(testDeviceInfo.id)
+              .child(_getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(
                 DrivenTestStatus.fromTest(
@@ -354,7 +360,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('reports')
-              .child(testDeviceInfo.id)
+              .child(_getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(report.toJson());
         }

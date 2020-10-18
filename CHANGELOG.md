@@ -1,3 +1,8 @@
+## [1.0.9] - October 18th, 2020
+
+* Added optional `deviceId` to `FirebaseTestDriver` to allow for apps overriding the default device id.
+
+
 ## [1.0.8+2] - October 15th, 2020
 
 * Fixed inverted logic on golden image cache.
