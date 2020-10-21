@@ -1,3 +1,8 @@
+## [1.0.9+1] - October 20th, 2020
+
+* Changed how the status updates on the `FirebaseTestDriver`.
+
+
 ## [1.0.9] - October 18th, 2020
 
 * Added optional `deviceId` to `FirebaseTestDriver` to allow for apps overriding the default device id.

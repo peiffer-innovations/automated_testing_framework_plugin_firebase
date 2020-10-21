@@ -106,7 +106,7 @@ class FirebaseTestDriver {
                 id: _getDeviceId(testDeviceInfo),
                 secret: _secret,
                 status: _testController.runningTest == true
-                    ? 'running'
+                    ? TestDeviceStatus.running
                     : _currentStatus,
                 testDeviceInfo: testDeviceInfo,
               ).toJson(),
@@ -244,9 +244,6 @@ class FirebaseTestDriver {
     try {
       _running = true;
       var testDeviceInfo = await TestDeviceInfo.initialize(null);
-
-      _setCurrentStatus(TestDeviceStatus.running);
-      _statusStreamController?.add(_currentStatus);
 
       var tests = <Test>[];
       for (var test in request.tests) {
