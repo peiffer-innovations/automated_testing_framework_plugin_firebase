@@ -364,7 +364,6 @@ class FirebaseTestDriver {
       }
     } finally {
       _running = false;
-      _setCurrentStatus(_driver == null ? 'available' : 'connected');
     }
   }
 
