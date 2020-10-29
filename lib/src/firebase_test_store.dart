@@ -179,7 +179,7 @@ class FirebaseTestStore {
       var snapshot = await ref.once();
 
       var docs = snapshot.value;
-      docs.forEach((key, doc) {
+      docs?.forEach((key, doc) {
         var data = doc;
         var pTest = PendingTest(
           active: JsonClass.parseBool(data['active']),
