@@ -10,6 +10,7 @@ import 'package:meta/meta.dart';
 
 class FirebaseTestDriver {
   FirebaseTestDriver({
+    this.appIdentifier,
     @required this.basePath,
     @required FirebaseDatabase db,
     this.deviceId,
@@ -29,6 +30,7 @@ class FirebaseTestDriver {
   }
   static final Logger _logger = Logger('FirebaseTestDriver');
 
+  final String appIdentifier;
   final String basePath;
   final String deviceId;
 
@@ -101,6 +103,7 @@ class FirebaseTestDriver {
             .child(_getDeviceId(testDeviceInfo))
             .set(
               DrivableDevice(
+                appIdentifier: appIdentifier,
                 driverId: _driver?.id,
                 driverName: _driver?.name,
                 id: _getDeviceId(testDeviceInfo),

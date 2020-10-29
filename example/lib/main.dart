@@ -14,6 +14,7 @@ import 'package:logging/logging.dart';
 import 'package:websafe_platform/websafe_platform.dart';
 
 void main() async {
+  TestAppSettings.initialize(appIdentifier: 'ATF FB');
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((record) {
     // ignore: avoid_print

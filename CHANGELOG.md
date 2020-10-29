@@ -1,3 +1,9 @@
+## [1.0.10] - October 28th, 2020
+
+* Updated to latest framework version.
+* Added `appIdentifier` to the `FirebaseTestDriver`.
+
+
 ## [1.0.9+1] - October 20th, 2020
 
 * Changed how the status updates on the `FirebaseTestDriver`.
