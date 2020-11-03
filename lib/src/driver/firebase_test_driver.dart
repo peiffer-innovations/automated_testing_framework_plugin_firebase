@@ -85,7 +85,7 @@ class FirebaseTestDriver {
   }
 
   Future<void> _applyStatusChange() async {
-    var testDeviceInfo = await TestDeviceInfo.initialize(null);
+    var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
     _subscriptions.forEach((element) => element.cancel());
     _subscriptions.clear();
 
@@ -95,7 +95,7 @@ class FirebaseTestDriver {
     if (enabled == true) {
       _setCurrentStatus(TestDeviceStatus.available);
       _pingTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
-        var testDeviceInfo = await TestDeviceInfo.initialize(null);
+        var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
         await _db
             .reference()
             .child(basePath)
@@ -168,7 +168,7 @@ class FirebaseTestDriver {
   }
 
   Future<void> _connect(ExternalTestDriver driver) async {
-    var testDeviceInfo = await TestDeviceInfo.initialize(null);
+    var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
     _setCurrentStatus(TestDeviceStatus.connected);
     _driver = driver;
     _connectionPingTimer?.cancel();
@@ -246,7 +246,7 @@ class FirebaseTestDriver {
   ) async {
     try {
       _running = true;
-      var testDeviceInfo = await TestDeviceInfo.initialize(null);
+      var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
 
       var tests = <Test>[];
       for (var test in request.tests) {

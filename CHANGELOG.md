@@ -1,3 +1,8 @@
+## [1.0.11] - November 3rd, 2020
+
+* Updated with latest framework version.
+
+
 ## [1.0.10+1] - October 28th, 2020
 
 * Fixed exception for when there are no tests.
