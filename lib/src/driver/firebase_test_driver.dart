@@ -65,6 +65,79 @@ class FirebaseTestDriver {
     }
   }
 
+  Future<void> connect(ExternalTestDriver driver) async {
+    var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
+    _setCurrentStatus(TestDeviceStatus.connected);
+    _driver = driver;
+    _connectionPingTimer?.cancel();
+    _connectionPingTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
+      var now = DateTime.now();
+
+      if (_driver == null) {
+        await disconnect();
+      } else {
+        try {
+          if (!_driver.validateSignature(_secret) ||
+              now.millisecondsSinceEpoch -
+                      _driver.pingTime.millisecondsSinceEpoch >
+                  _pingTimeout.inMilliseconds) {
+            await disconnect();
+          }
+        } catch (e) {
+          await disconnect();
+        }
+      }
+    });
+
+    _subscriptions.add(_db
+        .reference()
+        .child(basePath)
+        .child('connections')
+        .child(getDeviceId(testDeviceInfo))
+        .child(driver.id)
+        .onValue
+        .listen((event) {
+      if (event.snapshot.value != null) {
+        _driver = ExternalTestDriver.fromDynamic(event.snapshot.value);
+      } else {
+        _driver = null;
+      }
+
+      if (_driver == null) {
+        disconnect();
+      }
+    }));
+
+    _subscriptions.add(_db
+        .reference()
+        .child(basePath)
+        .child('driver_tests')
+        .child(driver.id)
+        .onValue
+        .listen((event) {
+      if (event.snapshot.value != null && _running == false) {
+        var request = DriverTestRequest.fromDynamic(event.snapshot.value);
+        if (DateTime.now().millisecondsSinceEpoch -
+                    request.timestamp.millisecondsSinceEpoch <
+                _pingTimeout.inMilliseconds &&
+            request.validateSignature(_secret)) {
+          _runTests(event.snapshot.key, request);
+        }
+      }
+    }));
+  }
+
+  Future<void> disconnect() async {
+    _connectionPingTimer?.cancel();
+    _connectionPingTimer = null;
+    _driver = null;
+    _setCurrentStatus(TestDeviceStatus.available);
+    await _applyStatusChange();
+  }
+
+  String getDeviceId(TestDeviceInfo testDeviceInfo) =>
+      deviceId ?? testDeviceInfo.id;
+
   void dispose() {
     enabled = false;
 
@@ -100,13 +173,13 @@ class FirebaseTestDriver {
             .reference()
             .child(basePath)
             .child('devices')
-            .child(_getDeviceId(testDeviceInfo))
+            .child(getDeviceId(testDeviceInfo))
             .set(
               DrivableDevice(
                 appIdentifier: appIdentifier,
                 driverId: _driver?.id,
                 driverName: _driver?.name,
-                id: _getDeviceId(testDeviceInfo),
+                id: getDeviceId(testDeviceInfo),
                 secret: _secret,
                 status: _testController.runningTest == true
                     ? TestDeviceStatus.running
@@ -120,7 +193,7 @@ class FirebaseTestDriver {
           .reference()
           .child(basePath)
           .child('connections')
-          .child(_getDeviceId(testDeviceInfo))
+          .child(getDeviceId(testDeviceInfo))
           .onValue
           .listen((event) async {
         if (_driver == null) {
@@ -134,7 +207,7 @@ class FirebaseTestDriver {
                 if (DateTime.now().millisecondsSinceEpoch -
                         timestamp.millisecondsSinceEpoch <=
                     _pingTimeout.inMilliseconds) {
-                  await _connect(driver);
+                  await connect(driver);
 
                   break;
                 }
@@ -152,7 +225,7 @@ class FirebaseTestDriver {
           .reference()
           .child(basePath)
           .child('connections')
-          .child(_getDeviceId(testDeviceInfo))
+          .child(getDeviceId(testDeviceInfo))
           .child('requests')
           .remove();
 
@@ -160,85 +233,12 @@ class FirebaseTestDriver {
           .reference()
           .child(basePath)
           .child('devices')
-          .child(_getDeviceId(testDeviceInfo))
+          .child(getDeviceId(testDeviceInfo))
           .remove();
     }
 
     _statusStreamController?.add(_currentStatus);
   }
-
-  Future<void> _connect(ExternalTestDriver driver) async {
-    var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
-    _setCurrentStatus(TestDeviceStatus.connected);
-    _driver = driver;
-    _connectionPingTimer?.cancel();
-    _connectionPingTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
-      var now = DateTime.now();
-
-      if (_driver == null) {
-        await _disconnect();
-      } else {
-        try {
-          if (!_driver.validateSignature(_secret) ||
-              now.millisecondsSinceEpoch -
-                      _driver.pingTime.millisecondsSinceEpoch >
-                  _pingTimeout.inMilliseconds) {
-            await _disconnect();
-          }
-        } catch (e) {
-          await _disconnect();
-        }
-      }
-    });
-
-    _subscriptions.add(_db
-        .reference()
-        .child(basePath)
-        .child('connections')
-        .child(_getDeviceId(testDeviceInfo))
-        .child(driver.id)
-        .onValue
-        .listen((event) {
-      if (event.snapshot.value != null) {
-        _driver = ExternalTestDriver.fromDynamic(event.snapshot.value);
-      } else {
-        _driver = null;
-      }
-
-      if (_driver == null) {
-        _disconnect();
-      }
-    }));
-
-    _subscriptions.add(_db
-        .reference()
-        .child(basePath)
-        .child('driver_tests')
-        .child(driver.id)
-        .onValue
-        .listen((event) {
-      if (event.snapshot.value != null && _running == false) {
-        var request = DriverTestRequest.fromDynamic(event.snapshot.value);
-        if (DateTime.now().millisecondsSinceEpoch -
-                    request.timestamp.millisecondsSinceEpoch <
-                _pingTimeout.inMilliseconds &&
-            request.validateSignature(_secret)) {
-          _runTests(event.snapshot.key, request);
-        }
-      }
-    }));
-  }
-
-  Future<void> _disconnect() async {
-    _connectionPingTimer?.cancel();
-    _connectionPingTimer = null;
-    _driver = null;
-    _setCurrentStatus(TestDeviceStatus.available);
-    await _applyStatusChange();
-  }
-
-  String _getDeviceId(TestDeviceInfo testDeviceInfo) =>
-      deviceId ?? testDeviceInfo.id;
 
   Future<void> _runTests(
     String driverId,
@@ -258,7 +258,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('status')
-              .child(_getDeviceId(testDeviceInfo))
+              .child(getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(
                 DrivenTestStatus.fromTest(
@@ -279,7 +279,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('status')
-              .child(_getDeviceId(testDeviceInfo))
+              .child(getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(
                 DrivenTestStatus.fromTest(
@@ -308,7 +308,7 @@ class FirebaseTestDriver {
                   .child('driven_test')
                   .child(driverId)
                   .child('status')
-                  .child(_getDeviceId(testDeviceInfo))
+                  .child(getDeviceId(testDeviceInfo))
                   .child(hex.encode(utf8.encode(test.id)))
                   .set(
                     DrivenTestStatus.fromTest(
@@ -342,7 +342,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('status')
-              .child(_getDeviceId(testDeviceInfo))
+              .child(getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(
                 DrivenTestStatus.fromTest(
@@ -360,7 +360,7 @@ class FirebaseTestDriver {
               .child('driven_test')
               .child(driverId)
               .child('reports')
-              .child(_getDeviceId(testDeviceInfo))
+              .child(getDeviceId(testDeviceInfo))
               .child(hex.encode(utf8.encode(test.id)))
               .set(report.toJson());
         }

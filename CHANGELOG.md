@@ -1,3 +1,8 @@
+## [1.0.12] - November 4th, 2020
+
+* Made some of the test driver functions public.
+
+
 ## [1.0.11] - November 3rd, 2020
 
 * Updated with latest framework version.
