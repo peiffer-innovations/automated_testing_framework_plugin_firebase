@@ -1,3 +1,8 @@
+## [1.0.13+2] - November 17th, 2020
+
+* Updated the signature of `runTests` and exposed the `driver`.
+
+
 ## [1.0.13+1] - November 16th, 2020
 
 * Updated the firebase driver to expose `runTests`.

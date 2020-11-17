@@ -130,7 +130,10 @@ class FirebaseTestDriver {
                     request.timestamp.millisecondsSinceEpoch <
                 _pingTimeout.inMilliseconds &&
             request.validateSignature(_secret)) {
-          runTests(event.snapshot.key, request);
+          runTests(
+            request,
+            driverId: event.snapshot.key,
+          );
         }
       }
     }));
@@ -167,9 +170,15 @@ class FirebaseTestDriver {
   }
 
   Future<void> runTests(
+    DriverTestRequest request, {
     String driverId,
-    DriverTestRequest request,
-  ) async {
+  }) async {
+    driverId ??= _driver?.id;
+
+    if (driverId?.isNotEmpty != true) {
+      throw Exception('[ERROR]: No driver is connected.');
+    }
+
     try {
       _running = true;
       var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
