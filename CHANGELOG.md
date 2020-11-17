@@ -1,3 +1,8 @@
+## [1.0.13+1] - November 16th, 2020
+
+* Updated the firebase driver to expose `runTests`.
+
+
 ## [1.0.13] - November 16th, 2020
 
 * Updated the firebase driver to allow device id to be changed post construction.

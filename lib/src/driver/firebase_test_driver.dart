@@ -130,7 +130,7 @@ class FirebaseTestDriver {
                     request.timestamp.millisecondsSinceEpoch <
                 _pingTimeout.inMilliseconds &&
             request.validateSignature(_secret)) {
-          _runTests(event.snapshot.key, request);
+          runTests(event.snapshot.key, request);
         }
       }
     }));
@@ -166,90 +166,7 @@ class FirebaseTestDriver {
     _subscriptions.clear();
   }
 
-  Future<void> _applyStatusChange() async {
-    var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
-    _subscriptions.forEach((element) => element.cancel());
-    _subscriptions.clear();
-
-    _pingTimer?.cancel();
-    _connectionPingTimer?.cancel();
-    _connectionPingTimer = null;
-    if (enabled == true) {
-      _setCurrentStatus(TestDeviceStatus.available);
-      _pingTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
-        var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
-        await _db
-            .reference()
-            .child(basePath)
-            .child('devices')
-            .child(getDeviceId(testDeviceInfo))
-            .set(
-              DrivableDevice(
-                appIdentifier: appIdentifier,
-                driverId: _driver?.id,
-                driverName: _driver?.name,
-                id: getDeviceId(testDeviceInfo),
-                secret: _secret,
-                status: _testController.runningTest == true
-                    ? TestDeviceStatus.running
-                    : _currentStatus,
-                testDeviceInfo: testDeviceInfo,
-              ).toJson(),
-            );
-      });
-
-      _subscriptions.add(await _db
-          .reference()
-          .child(basePath)
-          .child('connections')
-          .child(getDeviceId(testDeviceInfo))
-          .onValue
-          .listen((event) async {
-        if (_driver == null) {
-          var map = event.snapshot.value;
-
-          for (var entry in (map?.entries ?? [])) {
-            try {
-              var driver = ExternalTestDriver.fromDynamic(entry.value);
-              if (driver.validateSignature(_secret)) {
-                var timestamp = driver.pingTime;
-                if (DateTime.now().millisecondsSinceEpoch -
-                        timestamp.millisecondsSinceEpoch <=
-                    _pingTimeout.inMilliseconds) {
-                  await connect(driver);
-
-                  break;
-                }
-              }
-            } catch (e) {
-              // no-op; bad request
-            }
-          }
-        }
-      }));
-    } else {
-      _driver = null;
-
-      await _db
-          .reference()
-          .child(basePath)
-          .child('connections')
-          .child(getDeviceId(testDeviceInfo))
-          .child('requests')
-          .remove();
-
-      await _db
-          .reference()
-          .child(basePath)
-          .child('devices')
-          .child(getDeviceId(testDeviceInfo))
-          .remove();
-    }
-
-    _statusStreamController?.add(_currentStatus);
-  }
-
-  Future<void> _runTests(
+  Future<void> runTests(
     String driverId,
     DriverTestRequest request,
   ) async {
@@ -377,6 +294,89 @@ class FirebaseTestDriver {
     } finally {
       _running = false;
     }
+  }
+
+  Future<void> _applyStatusChange() async {
+    var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
+    _subscriptions.forEach((element) => element.cancel());
+    _subscriptions.clear();
+
+    _pingTimer?.cancel();
+    _connectionPingTimer?.cancel();
+    _connectionPingTimer = null;
+    if (enabled == true) {
+      _setCurrentStatus(TestDeviceStatus.available);
+      _pingTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
+        var testDeviceInfo = await TestDeviceInfoHelper.initialize(null);
+        await _db
+            .reference()
+            .child(basePath)
+            .child('devices')
+            .child(getDeviceId(testDeviceInfo))
+            .set(
+              DrivableDevice(
+                appIdentifier: appIdentifier,
+                driverId: _driver?.id,
+                driverName: _driver?.name,
+                id: getDeviceId(testDeviceInfo),
+                secret: _secret,
+                status: _testController.runningTest == true
+                    ? TestDeviceStatus.running
+                    : _currentStatus,
+                testDeviceInfo: testDeviceInfo,
+              ).toJson(),
+            );
+      });
+
+      _subscriptions.add(await _db
+          .reference()
+          .child(basePath)
+          .child('connections')
+          .child(getDeviceId(testDeviceInfo))
+          .onValue
+          .listen((event) async {
+        if (_driver == null) {
+          var map = event.snapshot.value;
+
+          for (var entry in (map?.entries ?? [])) {
+            try {
+              var driver = ExternalTestDriver.fromDynamic(entry.value);
+              if (driver.validateSignature(_secret)) {
+                var timestamp = driver.pingTime;
+                if (DateTime.now().millisecondsSinceEpoch -
+                        timestamp.millisecondsSinceEpoch <=
+                    _pingTimeout.inMilliseconds) {
+                  await connect(driver);
+
+                  break;
+                }
+              }
+            } catch (e) {
+              // no-op; bad request
+            }
+          }
+        }
+      }));
+    } else {
+      _driver = null;
+
+      await _db
+          .reference()
+          .child(basePath)
+          .child('connections')
+          .child(getDeviceId(testDeviceInfo))
+          .child('requests')
+          .remove();
+
+      await _db
+          .reference()
+          .child(basePath)
+          .child('devices')
+          .child(getDeviceId(testDeviceInfo))
+          .remove();
+    }
+
+    _statusStreamController?.add(_currentStatus);
   }
 
   void _setCurrentStatus(String status) {
