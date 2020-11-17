@@ -1,3 +1,8 @@
+## [1.0.13] - November 16th, 2020
+
+* Updated the firebase driver to allow device id to be changed post construction.
+
+
 ## [1.0.12] - November 4th, 2020
 
 * Made some of the test driver functions public.

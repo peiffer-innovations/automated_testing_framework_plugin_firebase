@@ -13,7 +13,7 @@ class FirebaseTestDriver {
     this.appIdentifier,
     @required this.basePath,
     @required FirebaseDatabase db,
-    this.deviceId,
+    String deviceId,
     bool enabled = true,
     Duration pingTimeout,
     @required String secret,
@@ -22,6 +22,7 @@ class FirebaseTestDriver {
         assert(db != null),
         assert(testController != null),
         _db = db,
+        _deviceId = deviceId,
         _pingTimeout = pingTimeout ?? Duration(seconds: 60),
         _secret = secret,
         _testController = testController {
@@ -32,7 +33,6 @@ class FirebaseTestDriver {
 
   final String appIdentifier;
   final String basePath;
-  final String deviceId;
 
   final FirebaseDatabase _db;
   final Duration _pingTimeout;
@@ -42,6 +42,7 @@ class FirebaseTestDriver {
 
   Timer _connectionPingTimer;
   String _currentStatus;
+  String _deviceId;
   ExternalTestDriver _driver;
   bool _enabled;
   StreamController<String> _statusStreamController =
@@ -52,7 +53,15 @@ class FirebaseTestDriver {
   String get currentStatus => _currentStatus;
   bool get enabled => _enabled;
 
+  String get deviceId => _deviceId;
+
   Stream<String> get statusStream => _statusStreamController?.stream;
+
+  set deviceId(String deviceId) {
+    assert(deviceId?.isNotEmpty == true);
+    disconnect();
+    _deviceId = deviceId;
+  }
 
   set enabled(bool enabled) {
     assert(enabled != null);
