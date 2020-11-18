@@ -54,6 +54,7 @@ class FirebaseTestDriver {
   bool get enabled => _enabled;
 
   String get deviceId => _deviceId;
+  ExternalTestDriver get driver => _driver;
 
   Stream<String> get statusStream => _statusStreamController?.stream;
 

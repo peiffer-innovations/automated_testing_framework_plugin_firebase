@@ -1,6 +1,11 @@
+## [1.0.13+3] - November 18th, 2020
+
+* Exposed the `driver` from `FirebaseTestDriver`
+
+
 ## [1.0.13+2] - November 17th, 2020
 
-* Updated the signature of `runTests` and exposed the `driver`.
+* Updated the signature of `runTests` .
 
 
 ## [1.0.13+1] - November 16th, 2020
