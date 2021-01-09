@@ -1,3 +1,8 @@
+## [1.0.14] - January 9th, 2021
+
+* Added metadata to the reports to provide full data sets as well as smaller minified data sets for easier reporting.
+
+
 ## [1.0.13+3] - November 18th, 2020
 
 * Exposed the `driver` from `FirebaseTestDriver`

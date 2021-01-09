@@ -31,18 +31,23 @@ class FirebaseTestStore {
   /// This only is utilized if the [storage] is not-null.  If the [storage] is
   /// null then this is ignored and screenshots are not uploaded.
   ///
-  /// The [testCollectionPath] is optional and is the collection within Firebase
-  /// Realtime Database where the tests themselves must be saved.  If omitted,
-  /// this defaults to 'tests'.
+  /// The [reportMetadataCollectionPath] is optional and is the collection
+  /// within Firebase Realtime Database test report metadata is saved.  If
+  /// omitted, this defaults to 'reportMetadata'
   ///
   /// The [reportCollectionPath] is optional and is the collection within
   /// Firebase Realtime Database where the test reports must be saved.  If
   /// omitted, this defaults to 'reports'.
+  ///
+  /// The [testCollectionPath] is optional and is the collection within Firebase
+  /// Realtime Database where the tests themselves must be saved.  If omitted,
+  /// this defaults to 'tests'.
   FirebaseTestStore({
     @required this.db,
     this.goldenImageCollectionPath,
     this.imagePath,
     this.reportCollectionPath,
+    this.reportMetadataCollectionPath,
     this.storage,
     this.testCollectionPath,
   }) : assert(db != null);
@@ -67,6 +72,11 @@ class FirebaseTestStore {
   /// to 'reports'.  Provided to allow for a single Firebase instance the
   /// ability to host multiple applications or environments.
   final String reportCollectionPath;
+
+  /// Optional collection path to store test report metadata.  If omitted, this
+  /// defaults to 'reportMetadata'.  Provided to allow for a single Firebase
+  /// instance the The bability to host multiple applications or environments.
+  final String reportMetadataCollectionPath;
 
   /// Optional [FirebaseStorage] reference object.  If set, and the platform is
   /// not web, then this will be used to upload screenshot results from test
@@ -225,17 +235,19 @@ class FirebaseTestStore {
     var result = false;
 
     var actualCollectionPath = (reportCollectionPath ?? 'reports');
+    var actualMetadataCollectionPath =
+        (reportMetadataCollectionPath ?? 'reportMetadata');
 
     var date = DateFormat('yyyy-MM-dd').format(report.endTime.toUtc());
     var random = Random().nextInt(10000000);
-    var doc = db.reference().child(actualCollectionPath).child(date).child(
-          hex.encode(
-            utf8.encode(
-              /// while not a truly _guaranteed_ unique key, the collision rate will be exceptionally low
-              '${report.deviceInfo.deviceSignature}_${report.startTime.millisecondsSinceEpoch}_$random',
-            ),
-          ),
-        );
+    var pathId = hex.encode(
+      utf8.encode(
+        /// while not a truly _guaranteed_ unique key, the collision rate will be exceptionally low
+        '${report.deviceInfo.deviceSignature}_${report.startTime.millisecondsSinceEpoch}_$random',
+      ),
+    );
+    var doc =
+        db.reference().child(actualCollectionPath).child(date).child(pathId);
 
     await doc.set(
       <String, dynamic>{
@@ -244,6 +256,15 @@ class FirebaseTestStore {
           report.toJson(false),
         ),
     );
+
+    var mdDoc = db
+        .reference()
+        .child(actualMetadataCollectionPath)
+        .child(date)
+        .child(pathId);
+    await mdDoc.set(<String, dynamic>{
+      'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
+    }..addAll(TestReportMetadata.fromTestReport(report).toJson()));
 
     if (!kIsWeb && storage != null) {
       var testStorage = FirebaseStorageTestStore(
