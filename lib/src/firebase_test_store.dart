@@ -264,7 +264,10 @@ class FirebaseTestStore {
         .child(pathId);
     await mdDoc.set(<String, dynamic>{
       'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
-    }..addAll(TestReportMetadata.fromTestReport(report).toJson()));
+    }..addAll(TestReportMetadata.fromTestReport(
+        report,
+        id: pathId,
+      ).toJson()));
 
     if (!kIsWeb && storage != null) {
       var testStorage = FirebaseStorageTestStore(

@@ -1,6 +1,7 @@
-## [1.0.14] - January 9th, 2021
+## [1.0.14+1] - January 12th, 2021
 
 * Added metadata to the reports to provide full data sets as well as smaller minified data sets for easier reporting.
+* Ensured the metadata ids match those of the reports
 
 
 ## [1.0.13+3] - November 18th, 2020
