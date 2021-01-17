@@ -1,3 +1,8 @@
+## [1.0.14+3] - January 17th, 2021
+
+* Dependency updates
+
+
 ## [1.0.14+1] - January 12th, 2021
 
 * Added metadata to the reports to provide full data sets as well as smaller minified data sets for easier reporting.
