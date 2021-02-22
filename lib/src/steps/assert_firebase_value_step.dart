@@ -57,6 +57,7 @@ class AssertFirebaseValueStep extends TestRunnerStep {
   /// value form the document to the [value].
   @override
   Future<void> execute({
+    @required CancelToken cancelToken,
     @required TestReport report,
     @required TestController tester,
   }) async {

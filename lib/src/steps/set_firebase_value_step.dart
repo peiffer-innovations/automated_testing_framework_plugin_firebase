@@ -44,6 +44,7 @@ class SetFirebaseValueStep extends TestRunnerStep {
   /// then set the associated [value] to the found widget.
   @override
   Future<void> execute({
+    @required CancelToken cancelToken,
     @required TestReport report,
     @required TestController tester,
   }) async {
