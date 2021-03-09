@@ -6,6 +6,7 @@ import 'package:automated_testing_framework/automated_testing_framework.dart';
 import 'package:automated_testing_framework_plugin_firebase/automated_testing_framework_plugin_firebase.dart';
 import 'package:automated_testing_framework_plugin_firebase_storage/automated_testing_framework_plugin_firebase_storage.dart';
 import 'package:convert/convert.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -43,14 +44,14 @@ class FirebaseTestStore {
   /// Realtime Database where the tests themselves must be saved.  If omitted,
   /// this defaults to 'tests'.
   FirebaseTestStore({
-    @required this.db,
+    required this.db,
     this.goldenImageCollectionPath,
     this.imagePath,
     this.reportCollectionPath,
     this.reportMetadataCollectionPath,
     this.storage,
     this.testCollectionPath,
-  }) : assert(db != null);
+  });
 
   static final Logger _logger = Logger('FirebaseTestStore');
 
@@ -61,35 +62,35 @@ class FirebaseTestStore {
   /// Optional collection path to store golden image metadata.  If omitted, this
   /// defaults to 'goldens'.  Provided to allow for a single Firebase instance
   /// the ability to host multiple applications or environments.
-  final String goldenImageCollectionPath;
+  final String? goldenImageCollectionPath;
 
   /// Optional path for screenshots to be uploated to within Firebase Storage.
   /// If [storage] is null or if this is on the web platform, this value is
   /// ignored.
-  final String imagePath;
+  final String? imagePath;
 
   /// Optional collection path to store test reports.  If omitted, this defaults
   /// to 'reports'.  Provided to allow for a single Firebase instance the
   /// ability to host multiple applications or environments.
-  final String reportCollectionPath;
+  final String? reportCollectionPath;
 
   /// Optional collection path to store test report metadata.  If omitted, this
   /// defaults to 'reportMetadata'.  Provided to allow for a single Firebase
   /// instance the The bability to host multiple applications or environments.
-  final String reportMetadataCollectionPath;
+  final String? reportMetadataCollectionPath;
 
   /// Optional [FirebaseStorage] reference object.  If set, and the platform is
   /// not web, then this will be used to upload screenshot results from test
   /// reports.  If omitted, screenshots will not be uploaded anywhere and will
   /// be lost if this test store is used for test reports.
-  final FirebaseStorage storage;
+  final FirebaseStorage? storage;
 
   /// Optional collection path to store test data.  If omitted, this defaults
   /// to 'tests'.  Provided to allow for a single Firebase instance the ability
   /// to host multiple applications or environments.
-  final String testCollectionPath;
+  final String? testCollectionPath;
 
-  GoldenTestImages _currentGoldenTestImages;
+  GoldenTestImages? _currentGoldenTestImages;
 
   /// Writes the golden images from the [report] to Cloud Storage (if it is set)
   /// and also writes the metadata that allows the reading of the golden images.
@@ -100,22 +101,22 @@ class FirebaseTestStore {
     var id = _getGoldenImageId(report);
 
     var data = <String, String>{};
-    for (var image in (report.images ?? <TestImage>[])) {
+    for (var image in report.images) {
       if (image.goldenCompatible == true) {
         data[image.id] = image.hash;
       }
     }
     var golden = GoldenTestImages(
-      deviceInfo: report.deviceInfo,
+      deviceInfo: report.deviceInfo!,
       goldenHashes: data,
       suiteName: report.suiteName,
-      testName: report.name,
+      testName: report.name!,
       testVersion: report.version,
     );
 
     if (!kIsWeb && storage != null) {
       var testStorage = FirebaseStorageTestStore(
-        storage: storage,
+        storage: storage!,
         imagePath: imagePath,
       );
       await testStorage.uploadImages(
@@ -132,19 +133,19 @@ class FirebaseTestStore {
   }
 
   /// Reader to read a golden image from Cloud Storage.
-  Future<Uint8List> testImageReader({
-    @required TestDeviceInfo deviceInfo,
-    @required String imageId,
-    String suiteName,
-    @required String testName,
-    int testVersion,
+  Future<Uint8List?> testImageReader({
+    required TestDeviceInfo deviceInfo,
+    required String imageId,
+    String? suiteName,
+    required String testName,
+    int? testVersion,
   }) async {
     var goldenId = GoldenTestImages.createId(
       deviceInfo: deviceInfo,
       suiteName: suiteName,
       testName: testName,
     );
-    GoldenTestImages golden;
+    GoldenTestImages? golden;
     if (_currentGoldenTestImages?.id == goldenId) {
       golden = _currentGoldenTestImages;
     } else {
@@ -160,11 +161,11 @@ class FirebaseTestStore {
       }
     }
 
-    Uint8List image;
+    Uint8List? image;
     if (!kIsWeb && golden != null && storage != null) {
-      var hash = golden.goldenHashes[imageId];
+      var hash = golden.goldenHashes![imageId];
       var testStorage = FirebaseStorageTestStore(
-        storage: storage,
+        storage: storage!,
         imagePath: imagePath,
       );
       image = await testStorage.downloadImage(hash);
@@ -176,10 +177,10 @@ class FirebaseTestStore {
   /// Implementation of the [TestReader] functional interface that can read test
   /// data from Firebase Realtime Database.
   Future<List<PendingTest>> testReader(
-    BuildContext context, {
-    String suiteName,
+    BuildContext? context, {
+    String? suiteName,
   }) async {
-    List<PendingTest> results;
+    List<PendingTest>? results;
 
     try {
       results = [];
@@ -193,8 +194,8 @@ class FirebaseTestStore {
         var data = doc;
         var pTest = PendingTest(
           active: JsonClass.parseBool(data['active']),
-          loader: AsyncTestLoader(({bool ignoreImages}) async {
-            var version = JsonClass.parseInt(data['version']);
+          loader: AsyncTestLoader(({bool? ignoreImages}) async {
+            var version = JsonClass.parseInt(data['version'])!;
             return Test(
               active: JsonClass.parseBool(data['active']),
               name: data['name'],
@@ -217,7 +218,7 @@ class FirebaseTestStore {
 
         if (pTest.active == true && suiteName == null ||
             pTest.suiteName == suiteName) {
-          results.add(pTest);
+          results!.add(pTest);
         }
       });
     } catch (e, stack) {
@@ -238,12 +239,12 @@ class FirebaseTestStore {
     var actualMetadataCollectionPath =
         (reportMetadataCollectionPath ?? 'reportMetadata');
 
-    var date = DateFormat('yyyy-MM-dd').format(report.endTime.toUtc());
+    var date = DateFormat('yyyy-MM-dd').format(report.endTime!.toUtc());
     var random = Random().nextInt(10000000);
     var pathId = hex.encode(
       utf8.encode(
         /// while not a truly _guaranteed_ unique key, the collision rate will be exceptionally low
-        '${report.deviceInfo.deviceSignature}_${report.startTime.millisecondsSinceEpoch}_$random',
+        '${report.deviceInfo!.deviceSignature}_${report.startTime!.millisecondsSinceEpoch}_$random',
       ),
     );
     var doc =
@@ -251,7 +252,7 @@ class FirebaseTestStore {
 
     await doc.set(
       <String, dynamic>{
-        'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
+        'invertedStartTime': -1 * report.startTime!.millisecondsSinceEpoch,
       }..addAll(
           report.toJson(false),
         ),
@@ -263,15 +264,16 @@ class FirebaseTestStore {
         .child(date)
         .child(pathId);
     await mdDoc.set(<String, dynamic>{
-      'invertedStartTime': -1 * report.startTime.millisecondsSinceEpoch,
+      'invertedStartTime': -1 * report.startTime!.millisecondsSinceEpoch,
     }..addAll(TestReportMetadata.fromTestReport(
         report,
         id: pathId,
-      ).toJson()));
+      )!
+          .toJson()));
 
     if (!kIsWeb && storage != null) {
       var testStorage = FirebaseStorageTestStore(
-        storage: storage,
+        storage: storage!,
         imagePath: imagePath,
       );
       await testStorage.uploadImages(report);
@@ -305,7 +307,7 @@ class FirebaseTestStore {
             .set(false);
       }
 
-      var version = (test.version ?? 0) + 1;
+      var version = test.version + 1;
       var id = hex.encoder.convert(utf8.encode('${test.id}_$version'));
 
       var testData = test

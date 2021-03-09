@@ -1,3 +1,9 @@
+## [3.0.0] - March 8th, 2021
+
+* Null Safety
+* Removed Test Driver capabilities, migrate to the new [websocket](https://pub.dev/packages/automated_testing_framework_driver_websocket) solution.
+
+
 ## [2.0.0] - February 21st, 2021
 
 * Updating to latest framework

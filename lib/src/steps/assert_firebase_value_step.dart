@@ -1,18 +1,15 @@
 import 'package:automated_testing_framework/automated_testing_framework.dart';
 import 'package:automated_testing_framework_plugin_firebase/automated_testing_framework_plugin_firebase.dart';
-import 'package:flutter/material.dart';
 import 'package:json_class/json_class.dart';
-import 'package:meta/meta.dart';
 
 /// Test step that asserts that the value equals (or does not equal) a specific
 /// value.
 class AssertFirebaseValueStep extends TestRunnerStep {
   AssertFirebaseValueStep({
-    @required this.equals,
-    @required this.path,
-    @required this.value,
-  })  : assert(equals != null),
-        assert(path?.isNotEmpty == true);
+    required this.equals,
+    required this.path,
+    required this.value,
+  }) : assert(path?.isNotEmpty == true);
 
   /// Set to [true] if the value from the [Testable] must equal the set [value].
   /// Set to [false] if the value from the [Testable] must not equal the
@@ -20,10 +17,10 @@ class AssertFirebaseValueStep extends TestRunnerStep {
   final bool equals;
 
   /// The path to look for the Document in.
-  final String path;
+  final String? path;
 
   /// The [value] to test againt when comparing the [Testable]'s value.
-  final String value;
+  final String? value;
 
   /// Creates an instance from a JSON-like map structure.  This expects the
   /// following format:
@@ -38,8 +35,8 @@ class AssertFirebaseValueStep extends TestRunnerStep {
   ///
   /// See also:
   /// * [JsonClass.parseBool]
-  static AssertFirebaseValueStep fromDynamic(dynamic map) {
-    AssertFirebaseValueStep result;
+  static AssertFirebaseValueStep? fromDynamic(dynamic map) {
+    AssertFirebaseValueStep? result;
 
     if (map != null) {
       result = AssertFirebaseValueStep(
@@ -57,13 +54,13 @@ class AssertFirebaseValueStep extends TestRunnerStep {
   /// value form the document to the [value].
   @override
   Future<void> execute({
-    @required CancelToken cancelToken,
-    @required TestReport report,
-    @required TestController tester,
+    required CancelToken cancelToken,
+    required TestReport report,
+    required TestController tester,
   }) async {
     String path = tester.resolveVariable(this.path);
-    String value = tester.resolveVariable(this.value);
-    assert(path?.isNotEmpty == true);
+    String? value = tester.resolveVariable(this.value);
+    assert(path.isNotEmpty == true);
 
     var name = "assert_firebase_value('$path', '$value', '$equals')";
     log(

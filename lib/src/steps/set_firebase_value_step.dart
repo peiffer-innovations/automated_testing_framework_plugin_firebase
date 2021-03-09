@@ -1,22 +1,19 @@
 import 'package:automated_testing_framework/automated_testing_framework.dart';
 import 'package:automated_testing_framework_plugin_firebase/automated_testing_framework_plugin_firebase.dart';
-import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 
 /// Sets a value on the identified Firebase Document identified by the
 /// [collectionPath] and [documentId].
 class SetFirebaseValueStep extends TestRunnerStep {
   SetFirebaseValueStep({
-    @required this.path,
-    @required this.value,
-  })  : assert(path?.isNotEmpty == true),
-        assert(value?.isNotEmpty == true);
+    required this.path,
+    required this.value,
+  }) : assert(path.isNotEmpty == true);
 
   /// The path of the Document to look for.
   final String path;
 
   /// The string representation of the value to set.
-  final String value;
+  final String? value;
 
   /// Creates an instance from a JSON-like map structure.  This expects the
   /// following format:
@@ -27,8 +24,8 @@ class SetFirebaseValueStep extends TestRunnerStep {
   ///   "value": <String>
   /// }
   /// ```
-  static SetFirebaseValueStep fromDynamic(dynamic map) {
-    SetFirebaseValueStep result;
+  static SetFirebaseValueStep? fromDynamic(dynamic map) {
+    SetFirebaseValueStep? result;
 
     if (map != null) {
       result = SetFirebaseValueStep(
@@ -44,13 +41,13 @@ class SetFirebaseValueStep extends TestRunnerStep {
   /// then set the associated [value] to the found widget.
   @override
   Future<void> execute({
-    @required CancelToken cancelToken,
-    @required TestReport report,
-    @required TestController tester,
+    required CancelToken cancelToken,
+    required TestReport report,
+    required TestController tester,
   }) async {
     String path = tester.resolveVariable(this.path);
-    String value = tester.resolveVariable(this.value);
-    assert(path?.isNotEmpty == true);
+    String? value = tester.resolveVariable(this.value);
+    assert(path.isNotEmpty == true);
 
     var name = "set_firebase_value('$path', '$value')";
     log(

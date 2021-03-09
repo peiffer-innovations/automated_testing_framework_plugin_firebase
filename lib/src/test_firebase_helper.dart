@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:automated_testing_framework/automated_testing_framework.dart';
 import 'package:automated_testing_framework_plugin_firebase/automated_testing_framework_plugin_firebase.dart';
+// ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,20 +20,17 @@ class TestFirebaseHelper {
   /// it is being entered or not.  Set to [true] to enable the autoformatter.
   /// Set to [null] or [false] to disable it.
   static bool autoformatJson = false;
-  static FirebaseDatabase _firebase;
+  static FirebaseDatabase? _firebase;
 
   static Widget buildJsonEditText({
-    @required BuildContext context,
-    @required String id,
-    String defaultValue,
-    @required TranslationEntry label,
-    List<ValueValidator> validators,
-    @required Map<String, dynamic> values,
+    required BuildContext context,
+    required String id,
+    String? defaultValue,
+    required TranslationEntry label,
+    List<ValueValidator>? validators,
+    required Map<String, dynamic> values,
   }) {
-    assert(context != null);
-    assert(id?.isNotEmpty == true);
-    assert(label != null);
-    assert(values != null);
+    assert(id.isNotEmpty == true);
 
     if (values[id] == null && defaultValue != null) {
       values[id] = defaultValue;
@@ -43,7 +41,7 @@ class TestFirebaseHelper {
     var initialValue = values[id]?.toString();
     if (initialValue?.isNotEmpty == true) {
       try {
-        initialValue = encoder.convert(json.decode(initialValue));
+        initialValue = encoder.convert(json.decode(initialValue!));
       } catch (e) {
         // no-op
       }
@@ -73,7 +71,7 @@ class TestFirebaseHelper {
       onEditingComplete: () {},
       smartQuotesType: SmartQuotesType.disabled,
       validator: (value) => validators?.isNotEmpty == true
-          ? Validator(validators: validators).validate(
+          ? Validator(validators: validators!).validate(
               context: context,
               label: translator.translate(label),
               value: value,
@@ -93,7 +91,7 @@ class TestFirebaseHelper {
 
   /// Registers the test steps to the optional [registry].  If not set, the
   /// default [TestStepRegistry] will be used.
-  static void registerTestSteps([TestStepRegistry registry]) {
+  static void registerTestSteps([TestStepRegistry? registry]) {
     (registry ?? TestStepRegistry.instance).registerCustomSteps([
       TestStepBuilder(
         availableTestStep: AvailableTestStep(
