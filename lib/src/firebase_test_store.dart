@@ -326,8 +326,7 @@ class FirebaseTestStore {
     } catch (e, stack) {
       _logger.severe('Error writing test', e, stack);
       try {
-        // ignore: deprecated_member_use
-        Scaffold.of(context).showSnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
               Translator.of(context).translate(

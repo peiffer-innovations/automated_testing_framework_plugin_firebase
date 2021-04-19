@@ -1,8 +1,12 @@
 // import 'package:automated_testing_framework/automated_testing_framework.dart';
 // import 'package:automated_testing_framework_plugin_firebase/automated_testing_framework_plugin_firebase.dart';
-// import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test('no-op', () {
+    // no-op
+  });
+
   // test('assert_firebase_value', () {
   //   TestFirebaseHelper.registerTestSteps();
   //   var availStep = TestStepRegistry.instance.getAvailableTestStep(
