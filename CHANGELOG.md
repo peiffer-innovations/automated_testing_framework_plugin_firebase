@@ -1,3 +1,8 @@
+## [3.0.1-nullsafety] - April 19th, 2021
+
+* Updated `firebase_database` to Null Safe preview
+
+
 ## [3.0.0+1] - April 19th, 2021
 
 * Removed deprecated references to the SnackBar

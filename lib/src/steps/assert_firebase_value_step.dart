@@ -71,7 +71,7 @@ class AssertFirebaseValueStep extends TestRunnerStep {
     var firebase = TestFirebaseHelper.firebase;
 
     var doc = firebase.reference().child(path);
-    var data = (await doc.once())?.value?.toString();
+    var data = (await doc.once()).value?.toString();
 
     if ((data == value) != equals) {
       throw Exception(
