@@ -98,7 +98,7 @@ class TestFirebaseHelper {
           form: AssertFirebaseValueForm(),
           help:
               TestFirebaseTranslations.atf_firebase_help_assert_firebase_value,
-          id: 'assert_firebase_value',
+          id: AssertFirebaseValueStep.id,
           keys: const {'equals', 'path', 'value'},
           quickAddValues: null,
           title:
@@ -112,7 +112,7 @@ class TestFirebaseHelper {
         availableTestStep: AvailableTestStep(
           form: SetFirebaseValueForm(),
           help: TestFirebaseTranslations.atf_firebase_help_set_firebase_value,
-          id: 'set_firebase_value',
+          id: SetFirebaseValueStep.id,
           keys: const {'path', 'value'},
           quickAddValues: null,
           title: TestFirebaseTranslations.atf_firebase_title_set_firebase_value,

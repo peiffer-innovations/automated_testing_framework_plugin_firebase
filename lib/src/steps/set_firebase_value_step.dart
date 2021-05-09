@@ -9,11 +9,20 @@ class SetFirebaseValueStep extends TestRunnerStep {
     required this.value,
   }) : assert(path.isNotEmpty == true);
 
+  static const id = 'set_firebase_value';
+
+  static List<String> get behaviorDrivenDescriptions => List.unmodifiable([
+        "set the value in firebase's `{{path}}` to `{{value}}`.",
+      ]);
+
   /// The path of the Document to look for.
   final String path;
 
   /// The string representation of the value to set.
   final String? value;
+
+  @override
+  String get stepId => id;
 
   /// Creates an instance from a JSON-like map structure.  This expects the
   /// following format:
@@ -59,6 +68,16 @@ class SetFirebaseValueStep extends TestRunnerStep {
 
     var doc = firebase.reference().child(path);
     await doc.set(value);
+  }
+
+  @override
+  String getBehaviorDrivenDescription() {
+    var result = behaviorDrivenDescriptions[0];
+
+    result = result.replaceAll('{{path}}', path);
+    result = result.replaceAll('{{value}}', value ?? 'null');
+
+    return result;
   }
 
   /// Converts this to a JSON compatible map.  For a description of the format,

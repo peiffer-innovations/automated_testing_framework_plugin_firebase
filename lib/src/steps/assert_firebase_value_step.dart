@@ -9,7 +9,13 @@ class AssertFirebaseValueStep extends TestRunnerStep {
     required this.equals,
     required this.path,
     required this.value,
-  }) : assert(path?.isNotEmpty == true);
+  }) : assert(path.isNotEmpty == true);
+
+  static const id = 'assert_firebase_value';
+
+  static List<String> get behaviorDrivenDescriptions => List.unmodifiable([
+        "assert that the value in firebase's `{{path}}` path is `{{equals}}` to `{{value}}`.",
+      ]);
 
   /// Set to [true] if the value from the [Testable] must equal the set [value].
   /// Set to [false] if the value from the [Testable] must not equal the
@@ -17,10 +23,13 @@ class AssertFirebaseValueStep extends TestRunnerStep {
   final bool equals;
 
   /// The path to look for the Document in.
-  final String? path;
+  final String path;
 
   /// The [value] to test againt when comparing the [Testable]'s value.
   final String? value;
+
+  @override
+  String get stepId => id;
 
   /// Creates an instance from a JSON-like map structure.  This expects the
   /// following format:
@@ -42,7 +51,7 @@ class AssertFirebaseValueStep extends TestRunnerStep {
       result = AssertFirebaseValueStep(
         equals:
             map['equals'] == null ? true : JsonClass.parseBool(map['equals']),
-        path: map['path'],
+        path: map['path']!,
         value: map['value']?.toString(),
       );
     }
@@ -78,6 +87,20 @@ class AssertFirebaseValueStep extends TestRunnerStep {
         'document: [$path] -- actualValue: [$data] ${equals == true ? '!=' : '=='} [$value].',
       );
     }
+  }
+
+  @override
+  String getBehaviorDrivenDescription() {
+    var result = behaviorDrivenDescriptions[0];
+
+    result = result.replaceAll(
+      '{{equals}}',
+      equals == true ? 'equal' : 'not equal',
+    );
+    result = result.replaceAll('{{path}}', path);
+    result = result.replaceAll('{{value}}', value ?? 'null');
+
+    return result;
   }
 
   /// Converts this to a JSON compatible map.  For a description of the format,

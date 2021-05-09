@@ -1,3 +1,8 @@
+## [3.0.2-nullsafety] - May 9th, 2021
+
+* Added BDD values to the test steps
+
+
 ## [3.0.1-nullsafety] - April 19th, 2021
 
 * Updated `firebase_database` to Null Safe preview
