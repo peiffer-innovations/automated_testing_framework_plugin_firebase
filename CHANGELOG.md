@@ -1,4 +1,4 @@
-## [3.0.2-nullsafety] - May 9th, 2021
+## [3.0.3-nullsafety] - May 9th, 2021
 
 * Added BDD values to the test steps
 
