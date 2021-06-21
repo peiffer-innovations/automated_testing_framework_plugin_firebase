@@ -149,15 +149,24 @@ class FirebaseTestStore {
     if (_currentGoldenTestImages?.id == goldenId) {
       golden = _currentGoldenTestImages;
     } else {
+      _logger.info('[GOLDEN_IMAGE]: downloading golden image hashes.');
       var actualCollectionPath = '${goldenImageCollectionPath ?? 'goldens'}';
 
       var id = hex.encode(utf8.encode(goldenId));
 
       var snapshot =
           await db.reference().child(actualCollectionPath).child(id).once();
-      if (snapshot.value != null) {
+
+      if (snapshot.value == null) {
+        _logger.info(
+          '[GOLDEN_IMAGE]: [FAILED]: downloading golden image hashes.',
+        );
+      } else {
         var goldenJson = snapshot.value;
         golden = GoldenTestImages.fromDynamic(goldenJson);
+        _logger.info(
+          '[GOLDEN_IMAGE]: [COMPLETE]: downloading golden image hashes.',
+        );
       }
     }
 
