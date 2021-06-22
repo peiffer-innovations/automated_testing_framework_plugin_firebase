@@ -1,3 +1,10 @@
+## [3.0.4] - June 22nd, 2021
+
+* Updated with the latest framework
+* Dependency update
+* Moved to real release rather than preview release
+
+
 ## [3.0.3-nullsafety] - May 9th, 2021
 
 * Added BDD values to the test steps
