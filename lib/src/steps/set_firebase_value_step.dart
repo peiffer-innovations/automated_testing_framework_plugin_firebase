@@ -66,7 +66,7 @@ class SetFirebaseValueStep extends TestRunnerStep {
 
     var firebase = TestFirebaseHelper.firebase;
 
-    var doc = firebase.reference().child(path);
+    var doc = firebase.ref().child(path);
     await doc.set(value);
   }
 

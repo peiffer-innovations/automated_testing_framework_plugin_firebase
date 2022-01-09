@@ -125,11 +125,7 @@ class FirebaseTestStore {
       );
     }
 
-    await db
-        .reference()
-        .child(actualCollectionPath)
-        .child(id)
-        .set(golden.toJson());
+    await db.ref().child(actualCollectionPath).child(id).set(golden.toJson());
   }
 
   /// Reader to read a golden image from Cloud Storage.
@@ -155,14 +151,14 @@ class FirebaseTestStore {
       var id = hex.encode(utf8.encode(goldenId));
 
       var snapshot =
-          await db.reference().child(actualCollectionPath).child(id).once();
+          await db.ref().child(actualCollectionPath).child(id).once();
 
-      if (snapshot.value == null) {
+      if (snapshot.snapshot.value == null) {
         _logger.info(
           '[GOLDEN_IMAGE]: [FAILED]: downloading golden image hashes.',
         );
       } else {
-        var goldenJson = snapshot.value;
+        var goldenJson = snapshot.snapshot.value;
         golden = GoldenTestImages.fromDynamic(goldenJson);
         _logger.info(
           '[GOLDEN_IMAGE]: [COMPLETE]: downloading golden image hashes.',
@@ -195,12 +191,12 @@ class FirebaseTestStore {
       results = [];
       var actualCollectionPath = (testCollectionPath ?? 'tests');
 
-      var ref = db.reference().child(actualCollectionPath);
+      var ref = db.ref().child(actualCollectionPath);
       var snapshot = await ref.once();
 
-      var docs = snapshot.value;
-      docs?.forEach((key, doc) {
-        var data = doc;
+      var docs = snapshot.snapshot.children;
+      docs.forEach((doc) {
+        var data = doc.value as Map;
         var pTest = PendingTest(
           active: JsonClass.parseBool(data['active']),
           loader: AsyncTestLoader(({bool? ignoreImages}) async {
@@ -256,8 +252,7 @@ class FirebaseTestStore {
         '${report.deviceInfo!.deviceSignature}_${report.startTime!.millisecondsSinceEpoch}_$random',
       ),
     );
-    var doc =
-        db.reference().child(actualCollectionPath).child(date).child(pathId);
+    var doc = db.ref().child(actualCollectionPath).child(date).child(pathId);
 
     await doc.set(
       <String, dynamic>{
@@ -267,11 +262,8 @@ class FirebaseTestStore {
         ),
     );
 
-    var mdDoc = db
-        .reference()
-        .child(actualMetadataCollectionPath)
-        .child(date)
-        .child(pathId);
+    var mdDoc =
+        db.ref().child(actualMetadataCollectionPath).child(date).child(pathId);
     await mdDoc.set(<String, dynamic>{
       'invertedStartTime': -1 * report.startTime!.millisecondsSinceEpoch,
     }..addAll(TestReportMetadata.fromTestReport(
@@ -305,11 +297,11 @@ class FirebaseTestStore {
       var oldId =
           hex.encoder.convert(utf8.encode('${test.id}_${test.version}'));
       var oldTest =
-          await db.reference().child(actualCollectionPath).child(oldId).once();
-      if (oldTest.value != null) {
+          await db.ref().child(actualCollectionPath).child(oldId).once();
+      if (oldTest.snapshot.value != null) {
         // deactivate the old test
         await db
-            .reference()
+            .ref()
             .child(actualCollectionPath)
             .child(oldId)
             .child('active')
@@ -329,7 +321,7 @@ class FirebaseTestStore {
           )
           .toJson();
 
-      await db.reference().child(actualCollectionPath).child(id).set(testData);
+      await db.ref().child(actualCollectionPath).child(id).set(testData);
 
       result = true;
     } catch (e, stack) {

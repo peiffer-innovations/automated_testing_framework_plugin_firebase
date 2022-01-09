@@ -12,9 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    container:
-      image: dart:latest
-
     steps:
       - uses: actions/checkout@v2
 
@@ -24,7 +21,7 @@ jobs:
           flutter_package: true
 
       - name: Publish
-        uses: peiffer-innovations/actions-pub-publish@v1.0.0
+        uses: peiffer-innovations/actions-pub-publish@v1.0.1
         with:
           credentials: ${{ secrets.CREDENTIAL_JSON }}
 
