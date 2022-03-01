@@ -299,13 +299,20 @@ class FirebaseTestStore {
       var oldTest =
           await db.ref().child(actualCollectionPath).child(oldId).once();
       if (oldTest.snapshot.value != null) {
-        // deactivate the old test
-        await db
-            .ref()
-            .child(actualCollectionPath)
-            .child(oldId)
-            .child('active')
-            .set(false);
+        try {
+          var old = Test.fromDynamic(oldTest.snapshot.value);
+          if (old.active == true) {
+            // deactivate the old test
+            await db
+                .ref()
+                .child(actualCollectionPath)
+                .child(oldId)
+                .child('active')
+                .set(false);
+          }
+        } catch (e) {
+          // no-op
+        }
       }
 
       var version = test.version + 1;

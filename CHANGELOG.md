@@ -1,3 +1,8 @@
+## [4.0.2] - March 1st, 2022
+
+* Fix for deactivating old versions for new tests
+
+
 ## [4.0.1+1] - February 6th, 2022
 
 * Dependency update
