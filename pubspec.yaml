@@ -3,10 +3,10 @@ description: "Library to use Google's Firebase Realtime Database as a storage me
 homepage: 'https://github.com/peiffer-innovations/automated_testing_framework_plugin_firebase'
 version: '5.0.1+9'
 
-environment: 
-  sdk: '>=2.17.0 <3.0.0'
+environment:
+  sdk: '>=2.18.0 <3.0.0'
 
-dependencies: 
+dependencies:
   automated_testing_framework: '^4.0.7+5'
   automated_testing_framework_models: '^2.0.9+10'
   automated_testing_framework_plugin_firebase_storage: '^5.0.0+21'
@@ -15,7 +15,7 @@ dependencies:
   firebase_core: '^2.1.1'
   firebase_database: '^10.0.4'
   firebase_storage: '^11.0.4'
-  flutter: 
+  flutter:
     sdk: 'flutter'
   form_validation: '^2.1.0+22'
   intl: '^0.17.0'
@@ -24,15 +24,14 @@ dependencies:
   static_translations: '^2.1.1+16'
   uuid: '^3.0.6'
 
-dev_dependencies: 
-  flutter_test: 
+dev_dependencies:
+  flutter_test:
     sdk: 'flutter'
 
-
-flutter: 
+flutter:
   uses-material-design: true
 
-ignore_updates: 
+ignore_updates:
   - 'archive'
   - 'async'
   - 'boolean_selector'
