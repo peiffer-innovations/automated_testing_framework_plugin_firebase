@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   test('assert_firebase_value', () {
     TestFirebaseHelper.registerTestSteps();
-    var availStep = TestStepRegistry.instance.getAvailableTestStep(
+    final availStep = TestStepRegistry.instance.getAvailableTestStep(
       'assert_firebase_value',
     )!;
 
@@ -23,7 +23,7 @@ void main() {
 
   test('set_firebase_value', () {
     TestFirebaseHelper.registerTestSteps();
-    var availStep = TestStepRegistry.instance.getAvailableTestStep(
+    final availStep = TestStepRegistry.instance.getAvailableTestStep(
       'set_firebase_value',
     )!;
 

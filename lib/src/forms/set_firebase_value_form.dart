@@ -41,7 +41,7 @@ class SetFirebaseValueForm extends TestStepForm {
               ],
               values: values!,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TestFirebaseHelper.buildJsonEditText(
               context: context,
               id: 'value',

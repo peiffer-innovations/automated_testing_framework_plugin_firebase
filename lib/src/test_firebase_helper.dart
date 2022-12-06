@@ -36,8 +36,8 @@ class TestFirebaseHelper {
       values[id] = defaultValue;
     }
 
-    var translator = Translator.of(context);
-    var encoder = JsonEncoder.withIndent('  ');
+    final translator = Translator.of(context);
+    final encoder = const JsonEncoder.withIndent('  ');
     var initialValue = values[id]?.toString();
     if (initialValue?.isNotEmpty == true) {
       try {
@@ -94,12 +94,12 @@ class TestFirebaseHelper {
   static void registerTestSteps([TestStepRegistry? registry]) {
     (registry ?? TestStepRegistry.instance).registerCustomSteps([
       TestStepBuilder(
-        availableTestStep: AvailableTestStep(
+        availableTestStep: const AvailableTestStep(
           form: AssertFirebaseValueForm(),
           help:
               TestFirebaseTranslations.atf_firebase_help_assert_firebase_value,
           id: AssertFirebaseValueStep.id,
-          keys: const {'equals', 'path', 'value'},
+          keys: {'equals', 'path', 'value'},
           quickAddValues: null,
           title:
               TestFirebaseTranslations.atf_firebase_title_assert_firebase_value,
@@ -109,11 +109,11 @@ class TestFirebaseHelper {
         testRunnerStepBuilder: AssertFirebaseValueStep.fromDynamic,
       ),
       TestStepBuilder(
-        availableTestStep: AvailableTestStep(
+        availableTestStep: const AvailableTestStep(
           form: SetFirebaseValueForm(),
           help: TestFirebaseTranslations.atf_firebase_help_set_firebase_value,
           id: SetFirebaseValueStep.id,
-          keys: const {'path', 'value'},
+          keys: {'path', 'value'},
           quickAddValues: null,
           title: TestFirebaseTranslations.atf_firebase_title_set_firebase_value,
           widgetless: true,
@@ -131,7 +131,7 @@ class _JsonTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    var encoder = JsonEncoder.withIndent('  ');
+    final encoder = const JsonEncoder.withIndent('  ');
     var encoded = newValue.text;
 
     try {

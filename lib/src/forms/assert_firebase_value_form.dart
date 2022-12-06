@@ -41,7 +41,7 @@ class AssertFirebaseValueForm extends TestStepForm {
               ],
               values: values!,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TestFirebaseHelper.buildJsonEditText(
               context: context,
               id: 'value',
@@ -49,7 +49,7 @@ class AssertFirebaseValueForm extends TestStepForm {
               validators: [RequiredValidator()],
               values: values,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             buildDropdown(
               context: context,
               defaultValue: 'true',

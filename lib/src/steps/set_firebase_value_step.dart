@@ -54,19 +54,19 @@ class SetFirebaseValueStep extends TestRunnerStep {
     required TestReport report,
     required TestController tester,
   }) async {
-    String path = tester.resolveVariable(this.path);
-    String? value = tester.resolveVariable(this.value);
+    final path = tester.resolveVariable(this.path);
+    final value = tester.resolveVariable(this.value);
     assert(path.isNotEmpty == true);
 
-    var name = "set_firebase_value('$path', '$value')";
+    final name = "set_firebase_value('$path', '$value')";
     log(
       name,
       tester: tester,
     );
 
-    var firebase = TestFirebaseHelper.firebase;
+    final firebase = TestFirebaseHelper.firebase;
 
-    var doc = firebase.ref().child(path);
+    final doc = firebase.ref().child(path);
     await doc.set(value);
   }
 

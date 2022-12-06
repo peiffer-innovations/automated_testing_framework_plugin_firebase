@@ -67,20 +67,20 @@ class AssertFirebaseValueStep extends TestRunnerStep {
     required TestReport report,
     required TestController tester,
   }) async {
-    String path = tester.resolveVariable(this.path);
-    String? value = tester.resolveVariable(this.value);
+    final path = tester.resolveVariable(this.path);
+    final value = tester.resolveVariable(this.value);
     assert(path.isNotEmpty == true);
 
-    var name = "assert_firebase_value('$path', '$value', '$equals')";
+    final name = "assert_firebase_value('$path', '$value', '$equals')";
     log(
       name,
       tester: tester,
     );
 
-    var firebase = TestFirebaseHelper.firebase;
+    final firebase = TestFirebaseHelper.firebase;
 
-    var doc = firebase.ref().child(path);
-    var data = (await doc.once()).snapshot.value?.toString();
+    final doc = firebase.ref().child(path);
+    final data = (await doc.once()).snapshot.value?.toString();
 
     if ((data == value) != equals) {
       throw Exception(

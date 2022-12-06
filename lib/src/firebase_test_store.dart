@@ -94,17 +94,17 @@ class FirebaseTestStore {
   /// and also writes the metadata that allows the reading of the golden images.
   /// This will throw an exception on failure.
   Future<void> goldenImageWriter(TestReport report) async {
-    var actualCollectionPath = goldenImageCollectionPath ?? 'goldens';
+    final actualCollectionPath = goldenImageCollectionPath ?? 'goldens';
 
-    var id = _getGoldenImageId(report);
+    final id = _getGoldenImageId(report);
 
-    var data = <String, String>{};
+    final data = <String, String>{};
     for (var image in report.images) {
       if (image.goldenCompatible == true) {
         data[image.id] = image.hash;
       }
     }
-    var golden = GoldenTestImages(
+    final golden = GoldenTestImages(
       deviceInfo: report.deviceInfo!,
       goldenHashes: data,
       suiteName: report.suiteName,
@@ -113,7 +113,7 @@ class FirebaseTestStore {
     );
 
     if (!kIsWeb && storage != null) {
-      var testStorage = FirebaseStorageTestStore(
+      final testStorage = FirebaseStorageTestStore(
         storage: storage!,
         imagePath: imagePath,
       );
@@ -134,7 +134,7 @@ class FirebaseTestStore {
     required String testName,
     int? testVersion,
   }) async {
-    var goldenId = GoldenTestImages.createId(
+    final goldenId = GoldenTestImages.createId(
       deviceInfo: deviceInfo,
       suiteName: suiteName,
       testName: testName,
@@ -144,11 +144,11 @@ class FirebaseTestStore {
       golden = _currentGoldenTestImages;
     } else {
       _logger.info('[GOLDEN_IMAGE]: downloading golden image hashes.');
-      var actualCollectionPath = '${goldenImageCollectionPath ?? 'goldens'}';
+      final actualCollectionPath = '${goldenImageCollectionPath ?? 'goldens'}';
 
-      var id = hex.encode(utf8.encode(goldenId));
+      final id = hex.encode(utf8.encode(goldenId));
 
-      var snapshot =
+      final snapshot =
           await db.ref().child(actualCollectionPath).child(id).once();
 
       if (snapshot.snapshot.value == null) {
@@ -156,7 +156,7 @@ class FirebaseTestStore {
           '[GOLDEN_IMAGE]: [FAILED]: downloading golden image hashes.',
         );
       } else {
-        var goldenJson = snapshot.snapshot.value;
+        final goldenJson = snapshot.snapshot.value;
         golden = GoldenTestImages.fromDynamic(goldenJson);
         _logger.info(
           '[GOLDEN_IMAGE]: [COMPLETE]: downloading golden image hashes.',
@@ -166,8 +166,8 @@ class FirebaseTestStore {
 
     Uint8List? image;
     if (!kIsWeb && golden != null && storage != null) {
-      var hash = golden.goldenHashes![imageId];
-      var testStorage = FirebaseStorageTestStore(
+      final hash = golden.goldenHashes![imageId];
+      final testStorage = FirebaseStorageTestStore(
         storage: storage!,
         imagePath: imagePath,
       );
@@ -187,18 +187,18 @@ class FirebaseTestStore {
 
     try {
       results = [];
-      var actualCollectionPath = (testCollectionPath ?? 'tests');
+      final actualCollectionPath = (testCollectionPath ?? 'tests');
 
-      var ref = db.ref().child(actualCollectionPath);
-      var snapshot = await ref.once();
+      final ref = db.ref().child(actualCollectionPath);
+      final snapshot = await ref.once();
 
-      var docs = snapshot.snapshot.children;
+      final docs = snapshot.snapshot.children;
       docs.forEach((doc) {
-        var data = doc.value as Map;
-        var pTest = PendingTest(
+        final data = doc.value as Map;
+        final pTest = PendingTest(
           active: JsonClass.parseBool(data['active']),
           loader: AsyncTestLoader(({bool? ignoreImages}) async {
-            var version = JsonClass.parseInt(data['version'])!;
+            final version = JsonClass.parseInt(data['version'])!;
             return Test(
               active: JsonClass.parseBool(data['active']),
               name: data['name'],
@@ -236,21 +236,21 @@ class FirebaseTestStore {
   /// all reports under a single day (as defined by the UTC time zone) in the
   /// same parent collection path.
   Future<bool> testReporter(TestReport report) async {
-    var result = false;
+    final result = false;
 
-    var actualCollectionPath = (reportCollectionPath ?? 'reports');
-    var actualMetadataCollectionPath =
+    final actualCollectionPath = (reportCollectionPath ?? 'reports');
+    final actualMetadataCollectionPath =
         (reportMetadataCollectionPath ?? 'reportMetadata');
 
-    var date = DateFormat('yyyy-MM-dd').format(report.endTime!.toUtc());
-    var random = Random().nextInt(10000000);
-    var pathId = hex.encode(
+    final date = DateFormat('yyyy-MM-dd').format(report.endTime!.toUtc());
+    final random = Random().nextInt(10000000);
+    final pathId = hex.encode(
       utf8.encode(
         /// while not a truly _guaranteed_ unique key, the collision rate will be exceptionally low
         '${report.deviceInfo!.deviceSignature}_${report.startTime!.millisecondsSinceEpoch}_$random',
       ),
     );
-    var doc = db.ref().child(actualCollectionPath).child(date).child(pathId);
+    final doc = db.ref().child(actualCollectionPath).child(date).child(pathId);
 
     await doc.set(
       <String, dynamic>{
@@ -260,7 +260,7 @@ class FirebaseTestStore {
         ),
     );
 
-    var mdDoc =
+    final mdDoc =
         db.ref().child(actualMetadataCollectionPath).child(date).child(pathId);
     await mdDoc.set(<String, dynamic>{
       'invertedStartTime': -1 * report.startTime!.millisecondsSinceEpoch,
@@ -271,7 +271,7 @@ class FirebaseTestStore {
           .toJson()));
 
     if (!kIsWeb && storage != null) {
-      var testStorage = FirebaseStorageTestStore(
+      final testStorage = FirebaseStorageTestStore(
         storage: storage!,
         imagePath: imagePath,
       );
@@ -290,11 +290,11 @@ class FirebaseTestStore {
     var result = false;
 
     try {
-      var actualCollectionPath = (testCollectionPath ?? 'tests');
+      final actualCollectionPath = (testCollectionPath ?? 'tests');
 
-      var oldId =
+      final oldId =
           hex.encoder.convert(utf8.encode('${test.id}_${test.version}'));
-      var oldTest =
+      final oldTest =
           await db.ref().child(actualCollectionPath).child(oldId).once();
       if (oldTest.snapshot.value != null) {
         // deactivate the old test
@@ -306,10 +306,10 @@ class FirebaseTestStore {
             .set(false);
       }
 
-      var version = test.version + 1;
-      var id = hex.encoder.convert(utf8.encode('${test.id}_$version'));
+      final version = test.version + 1;
+      final id = hex.encoder.convert(utf8.encode('${test.id}_$version'));
 
-      var testData = test
+      final testData = test
           .copyWith(
             steps: test.steps
                 .map((e) => e.copyWith(image: Uint8List.fromList([])))
