@@ -18,7 +18,7 @@ dependencies:
   flutter: 
     sdk: 'flutter'
   form_validation: '^2.1.0+24'
-  intl: '^0.17.0'
+  intl: ">=0.17.0 <0.19.0"
   json_class: '^2.1.2+14'
   logging: '^1.1.0'
   static_translations: '^2.1.1+18'
