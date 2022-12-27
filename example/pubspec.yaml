@@ -17,6 +17,9 @@ dev_dependencies:
   flutter_test:
     sdk: 'flutter'
 
+dependency_overrides:
+  intl: '^0.18.0'
+
 flutter_icons:
   android: true
   ios: true
